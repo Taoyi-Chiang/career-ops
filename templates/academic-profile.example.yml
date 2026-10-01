@@ -1,0 +1,155 @@
+# Academic Career prototype — master data example
+# `node academic.mjs init` copies this to config/academic-profile.yml.
+# The real file is gitignored. Keep facts here; generated portals/CVs are disposable.
+
+version: 1
+locale: en
+
+person:
+  names:
+    en: Your Name
+    zh-TW: 你的姓名
+    fr: Your Name
+    ja: Your Name
+  headline:
+    en: Scholar of Imperial Chinese Literature and Digital Humanities
+    zh-TW: 帝制中國文學與數位人文研究者
+  contact:
+    location: Taiwan
+    email: your.email@example.com
+    website: https://example.com
+    orcid: 0000-0000-0000-0000
+
+research:
+  summary:
+    en: Research on premodern Chinese literature, literary knowledge, allusion, and computational approaches to historical texts.
+    zh-TW: 研究帝制中國文學、文學知識、典故，以及歷史文本的計算方法。
+  interests:
+    - en: Tang–Song literature
+      zh-TW: 唐宋文學
+    - en: fu 賦 and parallel prose
+      zh-TW: 賦與駢文
+    - en: allusion and literary knowledge
+      zh-TW: 典故與文學知識
+    - en: digital humanities
+      zh-TW: 數位人文
+    - en: text reuse and knowledge graphs
+      zh-TW: 文本重用與知識圖譜
+
+# One target block drives the academic search lane.
+# AND-groups use career-ops' existing " + " syntax, so broad academic titles
+# are only accepted when a relevant field term also appears in the title.
+targets:
+  max_posting_age_days: 60
+  recheck_after_days: 30
+  title_filter:
+    positive:
+      - "assistant professor + chinese"
+      - "assistant professor + east asian"
+      - "assistant professor + literature"
+      - "lecturer + chinese"
+      - "lecturer + east asian"
+      - "postdoctoral + chinese"
+      - "postdoctoral + east asian"
+      - "postdoc + chinese"
+      - "postdoc + digital humanities"
+      - "research fellow + chinese"
+      - "research fellow + east asian"
+      - "digital humanities + fellow"
+      - "digital humanities + researcher"
+      - "maître de conférences + chinois"
+      - "postdoctorant + chinois"
+      - "chercheur postdoctoral + chinois"
+      - "博士研究員"
+      - "博士後研究員"
+      - "特任研究員"
+      - "中国文学 + 助教"
+      - "中国文学 + 講師"
+      - "中国文学 + 准教授"
+    negative:
+      - medicine
+      - nursing
+      - dentistry
+      - pharmacy
+      - veterinary
+      - engineering
+      - accounting
+      - finance
+      - marketing
+      - athletics
+  # Leave location_filter absent for a world-wide scan. Add it only when you
+  # really want to exclude places; missing provider location data otherwise
+  # makes an overly strict filter easy to misread.
+  # location_filter:
+  #   allow: [Taiwan, Japan, France, Belgium, Netherlands, Germany, United Kingdom, Remote]
+
+  # The prototype enables the provider already present in career-ops.
+  # Future EURAXESS / JREC-IN / Galaxie providers can be added here without
+  # changing the master academic record.
+  job_boards:
+    - name: HigherEdJobs — Higher Education
+      provider: higheredjobs
+      cat_id: 68
+      enabled: true
+
+academic:
+  education:
+    - degree:
+        en: PhD Candidate in Chinese Literature
+        zh-TW: 中國文學博士候選人
+      institution:
+        en: Example University
+        zh-TW: 範例大學
+      location: Taiwan
+      dates: 2022–present
+      status: current
+      details:
+        - Dissertation title or concise research focus.
+
+  appointments:
+    - title:
+        en: Lecturer
+        zh-TW: 兼任講師
+      institution: Example University
+      dates: 2025–present
+      status: current
+      details:
+        - Courses in Chinese literature and academic writing.
+
+  publications:
+    - citation:
+        en: "Your Name. ‘Example Article.’ Journal of Example Studies 12 (2026): 1–25."
+        zh-TW: "你的姓名：〈範例論文〉，《範例研究》12（2026），頁1–25。"
+      status: published
+    - citation:
+        en: "Your Name. ‘Work under review.’"
+        zh-TW: "你的姓名：〈審查中論文〉。"
+      status: under_review
+
+  talks:
+    - title:
+        en: Example Conference Paper
+        zh-TW: 範例會議論文
+      event: Example Conference
+      place: Taipei
+      date: 2026
+      status: completed
+
+  teaching:
+    - course:
+        en: Academic Writing
+        zh-TW: 學術寫作
+      institution: Example University
+      role: Instructor
+      dates: 2026
+      status: completed
+
+  digital_outputs:
+    - title: TEI corpus and reproducible text-analysis workflow
+      date: 2026
+      status: completed
+      details:
+        - Corpus design, TEI encoding, text reuse, and network analysis.
+
+  awards: []
+  service: []
