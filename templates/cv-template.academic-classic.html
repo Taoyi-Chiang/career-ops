@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NAME}} — Academic CV</title>
+<style>
+  @page { size: A4; margin: 17mm 18mm 19mm 18mm; }
+  * { box-sizing: border-box; }
+  html { background: #fff; }
+  body {
+    margin: 0;
+    color: #111;
+    background: #fff;
+    font-family: Baskerville, "Palatino Linotype", "Book Antiqua", "Noto Serif CJK TC", "Source Han Serif TC", PMingLiU, "Times New Roman", serif;
+    font-size: 10.4pt;
+    line-height: 1.38;
+    font-variant-numeric: oldstyle-nums proportional-nums;
+    text-rendering: optimizeLegibility;
+  }
+  header {
+    text-align: center;
+    margin: 0 0 8mm;
+    padding-bottom: 4.2mm;
+    border-bottom: 0.45pt solid #222;
+  }
+  h1 {
+    margin: 0;
+    font-size: 21pt;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: 0.025em;
+  }
+  .headline {
+    margin-top: 2.4mm;
+    font-size: 10.8pt;
+    font-style: italic;
+  }
+  .contact {
+    margin-top: 2mm;
+    font-size: 8.9pt;
+    letter-spacing: 0.018em;
+  }
+  section { margin: 0 0 5.2mm; }
+  h2 {
+    margin: 0 0 2.3mm;
+    padding: 0 0 1.2mm;
+    border-bottom: 0.35pt solid #777;
+    font-size: 10.1pt;
+    font-weight: 600;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.09em;
+  }
+  p { margin: 0 0 2mm; }
+  .summary { max-width: 46em; }
+  .keywords { font-style: italic; font-size: 9.7pt; }
+  .entry { margin: 0 0 2.8mm; break-inside: avoid; }
+  .entry-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 8mm;
+    align-items: baseline;
+  }
+  .entry-title { font-weight: 600; }
+  .entry-meta { text-align: right; font-size: 9.2pt; white-space: nowrap; }
+  ul { margin: 1mm 0 0 4.5mm; padding-left: 3.6mm; }
+  li { margin: 0.55mm 0; }
+  .bibliography { margin: 0; padding-left: 7mm; }
+  .bibliography li {
+    margin: 0 0 2.2mm;
+    padding-left: 1.5mm;
+    break-inside: avoid;
+  }
+  a { color: inherit; text-decoration: none; }
+  @media screen {
+    body {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 10mm auto;
+      padding: 17mm 18mm 19mm;
+      box-shadow: 0 0 8mm rgba(0,0,0,.12);
+    }
+    @page { margin: 0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>{{NAME}}</h1>
+  <div class="headline">{{HEADLINE}}</div>
+  <div class="contact">{{CONTACT}}</div>
+</header>
+<main>
+{{SECTIONS}}
+</main>
+</body>
+</html>
