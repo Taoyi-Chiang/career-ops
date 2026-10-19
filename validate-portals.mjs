@@ -16,6 +16,8 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import * as yaml from 'js-yaml';
 import { flagValue, hasFlag } from './lib/cli-flags.mjs';
 import { getCareerOpsRoot } from './path-resolver.mjs';
+import { validateEmploymentFilter } from './employment-filter.mjs';
+import { isMainModule } from './lib/is-main-module.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PROVIDERS_DIR = join(ROOT, 'providers');
@@ -141,6 +143,10 @@ export async function validatePortalsConfig(config, { providerIds = new Set() } 
       validateKeywordList(config.title_filter.negative, 'title_filter.negative', errors);
       validateKeywordList(config.title_filter.seniority_boost, 'title_filter.seniority_boost', errors);
     }
+  }
+
+  if (config.employment_filter !== undefined) {
+    errors.push(...validateEmploymentFilter(config.employment_filter));
   }
 
   // Optional per-scanner override consumed only by scan-ats-full.mjs. Same
@@ -352,7 +358,7 @@ async function main() {
   if (result.errors.length > 0) process.exit(1);
 }
 
-main().catch((err) => {
+if (isMainModule(import.meta.url)) main().catch((err) => {
   console.error(`validate-portals failed: ${err.message}`);
   process.exit(1);
 });

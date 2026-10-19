@@ -112,9 +112,10 @@ export function parseEnvPayload(text) {
  *   - salary:   {min, max, currency} from salary_yearly_minimum/salary_maximum
  *
  * @param {any} h
+ * @param {{includeAllOffices?: boolean}} [options] Preserve every office for a country-scoped search.
  * @returns {{ title: string, url: string, company: string, location: string, postedAt?: number, salary?: {min: number, max: number, currency: string} } | null}
  */
-export function normalizeWttjHit(h) {
+export function normalizeWttjHit(h, { includeAllOffices = false } = {}) {
   if (!h || typeof h !== 'object') return null;
   const title = typeof h.name === 'string' ? h.name.trim() : '';
   const slug = typeof h.slug === 'string' ? h.slug.trim() : '';
@@ -129,10 +130,15 @@ export function normalizeWttjHit(h) {
       ? h.organization.name.trim()
       : 'Welcome to the Jungle';
 
-  const office = Array.isArray(h.offices) && h.offices.length > 0 ? h.offices[0] : null;
+  const offices = Array.isArray(h.offices) ? h.offices : [];
   const parts = [];
-  if (office && typeof office.city === 'string' && office.city.trim()) parts.push(office.city.trim());
-  if (office && typeof office.country === 'string' && office.country.trim()) parts.push(office.country.trim());
+  // Opt-in for country-scoped searches: Algolia may match a French office
+  // that is not first. Keeping only offices[0] would then lose a genuine match
+  // in scan.mjs's location filter. Existing profiles retain their old mapping.
+  for (const office of includeAllOffices ? offices : offices.slice(0, 1)) {
+    if (office && typeof office.city === 'string' && office.city.trim()) parts.push(office.city.trim());
+    if (office && typeof office.country === 'string' && office.country.trim()) parts.push(office.country.trim());
+  }
   if (h.remote === 'fulltime') parts.push('Remote');
   const location = parts.join(', ');
 
@@ -240,7 +246,7 @@ export default {
         );
       }
       for (const h of json.hits) {
-        const job = normalizeWttjHit(h);
+        const job = normalizeWttjHit(h, { includeAllOffices: entry.wttj?.include_all_offices === true });
         if (job && !byUrl.has(job.url)) byUrl.set(job.url, job);
       }
     }
