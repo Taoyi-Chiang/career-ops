@@ -255,6 +255,8 @@ const SYSTEM_PATHS = [
   'lib/cv-payload-schema.mjs',
   'lib/page-format.mjs',
   'scan-hn.mjs',
+  'employment-filter.mjs',
+  'france-culture.mjs',
   'scripts/check-syntax.mjs',
   'scripts/export-ats-text.mjs',
   'scripts/followup-sweep.sh',

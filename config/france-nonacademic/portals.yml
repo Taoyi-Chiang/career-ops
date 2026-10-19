@@ -1,0 +1,200 @@
+# France: cultural collections, digital publishing, research-data services.
+# Independent profile. Do not copy this over a root/academic portals.yml.
+# Run: node france-culture.mjs --check
+# Preview later: node france-culture.mjs --scan --dry-run --json
+
+title_filter: &culture_titles
+  # Accents are folded by the existing matcher. AND terms can occur in any
+  # order. stem:charge covers chargé, chargée, chargé·e, chargé(e), chargé/e.
+  positive:
+    - 'stem:archiviste'
+    - 'stem:documentaliste'
+    - 'stem:charge + données'
+    - 'stem:charge + data'
+    - 'stem:charge + documentation'
+    - 'stem:charge + ressources + électroniques'
+    - 'data steward'
+    - 'data-steward'
+    - 'research data manager'
+    - 'research data officer'
+    - 'data librarian'
+    - 'digital archivist'
+    - 'digital preservation'
+    - 'metadata librarian'
+    - 'metadata specialist'
+    - 'metadata manager'
+    - 'digital collections'
+    - 'digital publishing'
+    - 'scholarly publishing'
+    - 'stem:edit + numérique'
+    - 'stem:editor + numérique'
+    - 'stem:chef + projet + numérique'
+    - 'stem:charge + projet + numérique'
+    - 'stem:chef + projet + documentaire'
+    - 'stem:chef + projet + numérisation'
+    - 'stem:responsable + archives'
+    - 'stem:responsable + données'
+    - 'stem:gestionnaire + données'
+    - 'stem:gestionnaire + collections'
+    - 'stem:gestionnaire + ressources + documentaires'
+    - 'stem:ingenieur + données'
+    - 'stem:ingenieur + humanités'
+    - 'stem:ingenieur + édition'
+    - 'stem:ingenieur + corpus'
+    - 'stem:ingenieur + TEI'
+    - 'stem:ingenieur + XML'
+    - 'stem:referent + données'
+    - 'stem:referent + science + ouverte'
+    - 'stem:coordinateur + science + ouverte'
+    - 'stem:coordinatrice + science + ouverte'
+    - 'stem:charge + science + ouverte'
+    - 'stem:charge + valorisation + patrimoine'
+  # No inherited AI/ML/LLM requirement. A cultural job mentioning AI still passes.
+  negative:
+    - 'word:stage'
+    - 'stem:stagiaire'
+    - 'word:intern'
+    - 'stem:internship'
+    - 'stem:alternan'
+    - 'stem:apprenti'
+    - 'stem:doctoran'
+    - 'stem:postdoc'
+    - 'post-doc'
+    - 'post doc'
+    - 'stem:professeur'
+    - 'stem:enseignant'
+    - 'account executive'
+    - 'sales engineer'
+  seniority_boost: []
+
+location_filter:
+  # Missing location passes. Remote is a discovery hint, NOT proof of French
+  # payroll/work permission. Explicit country-only restrictions are checked below.
+  strict: false
+  always_allow: []
+  # A finite allow-list of French cities silently loses smaller towns. Keep
+  # unknown cities here; the evidence gate below handles named foreign locations.
+  allow: []
+  block: []
+  block_hard: []
+
+# No salary floor/currency gate: undisclosed pay must not mean unpaid.
+content_filter:
+  positive: []
+  negative: []
+  # Broad project titles need cultural/research context when a JD is present.
+  # Providers returning no JD pass for later review, as in the native filter.
+  by_title_keyword:
+    'stem:chef + projet + numérique':
+      positive: ['culture', 'patrimoine', 'archiv', 'biblioth', 'document', 'édition', 'edition', 'musée', 'musee', 'recherche', 'research', 'humanités', 'humanites', 'TEI', 'XML', 'collections']
+      negative: []
+# Do not infer the candidate's legal status or require sponsorship wording.
+# Immigration/public-sector conditions are annotated below, never auto-vetoed.
+visa_filter:
+  enabled: false
+  require_mention: false
+
+employment_filter:
+  reject_explicit_unpaid: true
+  reject_france_ineligible: true
+  signals:
+    paid: ['word:CDI', 'word:CDD', 'poste rémunéré', 'emploi rémunéré', 'paid position', 'salaried position', 'contrat de travail']
+    unpaid: ['poste non rémunéré', 'mission non rémunérée', 'emploi non rémunéré', 'travail non rémunéré', 'non-remunere', 'unpaid position', 'unpaid role', 'volunteer position', 'mission bénévole', 'poste bénévole', 'archiviste bénévole', 'documentaliste bénévole']
+    remote: ['word:remote', 'télétravail', 'travail à distance']
+    onsite: ['sur site uniquement', 'présentiel obligatoire', 'télétravail non autorisé', 'pas de télétravail', 'no remote work', 'non-remote', 'not remote', 'on-site only', 'onsite only']
+    france_eligible: ['remote france', 'remote - france', 'télétravail depuis la France', 'work from France', 'candidates based in France', 'France eligible', 'worldwide', 'work from anywhere']
+    france_ineligible: ['US only', 'US-only', 'USA only', 'UK only', 'UK-only', 'Germany only', 'must be based in the United States', 'must reside in the United States', 'must be based in the UK', 'must reside in the UK', 'must be based in Germany', 'United States only', 'United Kingdom only', 'France excluded', 'not available in France', 'résidence obligatoire au Royaume-Uni', 'résidence obligatoire aux États-Unis', 'résidence obligatoire en Allemagne']
+    sponsorship_available: ['visa sponsorship available', 'sponsorship is available', 'immigration support provided', 'accompagnement à la demande de visa', 'prise en charge du visa']
+    sponsorship_unavailable: ['no visa sponsorship', 'cannot sponsor visas', 'unable to sponsor', 'without sponsorship', 'pas de prise en charge du visa', 'aucun parrainage de visa']
+    authorization_required: ['autorisation de travail requise', 'autorisé à travailler en France', 'autorisation de travail en cours de validité', 'droit de travailler en France', 'right to work in France', 'must be authorized to work in France']
+    nationality_restricted: ['nationalité française exigée', 'nationalité française requise', 'réservé aux ressortissants', 'French citizenship required', 'EU citizens only']
+    contract_open: ['ouvert aux contractuels', 'ouvert aux contractuel', 'ouvert aux agents contractuels', 'recrutement contractuel', 'titulaire ou contractuel']
+    officials_only: ['réservé aux fonctionnaires', 'fonctionnaires uniquement', 'exclusivement par voie de mutation', 'titulaire uniquement']
+    # These two lists read only the structured location, never the JD/footer.
+    france_location: ['word:France', 'word:FR']
+    foreign_location: ['United States', 'word:USA', 'word:US', 'United Kingdom', 'word:UK', 'Germany', 'Allemagne', 'Canada', 'Belgium', 'Belgique', 'Switzerland', 'Suisse', 'Spain', 'Espagne', 'Italy', 'Italie', 'Netherlands', 'Pays-Bas', 'Austria', 'Autriche', 'Portugal', 'Poland', 'Pologne', 'Australia', 'Australie', 'India', 'Inde', 'Singapore', 'Singapour', 'Japan', 'Japon']
+
+# These are agent/WebSearch queries. scan.mjs does NOT execute search_queries.
+# Primary cultural/public/research-service sources come first. They do not
+# require a pay/visa phrase: that information may be absent from an indexed page.
+search_queries:
+  - name: Culture — emplois publics
+    query: 'site:choisirleservicepublic.gouv.fr/offre-emploi/ (archiviste OR documentaliste OR "données" OR "édition numérique") (culture OR bibliothèque OR patrimoine OR archives)'
+    enabled: true
+  - name: Collectivités — archives et patrimoine numérique
+    query: 'site:emploi-territorial.fr/offre/ (archiviste OR documentaliste OR "chef de projet numérique" OR "cheffe de projet numérique")'
+    enabled: true
+  - name: ProfilCulture — édition et documentation
+    query: 'site:profilculture.com ("édition numérique" OR "documentaliste" OR "archives numériques" OR "chef de projet numérique")'
+    enabled: true
+  - name: BnF et Bpi — données et collections
+    query: '(site:bnf.fr OR site:bpi.fr) (recrutement OR emploi) (numérique OR métadonnées OR données OR documentation)'
+    enabled: true
+  - name: CNRS — appui à la recherche
+    query: 'site:emploi.cnrs.fr ("data steward" OR "données de la recherche" OR "humanités numériques" OR "édition numérique" OR "TEI") -doctorant -postdoctorant'
+    enabled: true
+  - name: OpenEdition, Huma-Num et services de données
+    query: '(site:openedition.org OR site:hypotheses.org OR site:huma-num.fr OR site:abes.fr OR site:inist.fr) (recrutement OR emploi OR CDD OR CDI) (données OR édition OR documentation OR corpus)'
+    enabled: true
+  - name: Remote — accessible depuis la France
+    query: '("data steward" OR "digital archivist" OR "digital publishing" OR "metadata specialist") ("remote France" OR "work from France" OR "remote Europe" OR worldwide)'
+    enabled: true
+
+tracked_companies:
+  # No existing provider claims these institutional interfaces. Disabled means
+  # zero automatic HTTP coverage; use the queries above until parsers are added.
+  - name: Ministère de la Culture — Choisir le service public
+    careers_url: https://choisirleservicepublic.gouv.fr/nos-offres/
+    scan_method: websearch
+    enabled: false
+  - name: Emploi territorial
+    careers_url: https://www.emploi-territorial.fr/
+    scan_method: websearch
+    enabled: false
+  - name: ProfilCulture
+    careers_url: https://www.profilculture.com/
+    scan_method: websearch
+    enabled: false
+  - name: BnF
+    careers_url: https://www.bnf.fr/
+    scan_method: websearch
+    enabled: false
+  - name: CNRS — appui à la recherche
+    careers_url: https://emploi.cnrs.fr/
+    scan_method: websearch
+    enabled: false
+  - name: OpenEdition et Huma-Num
+    careers_url: https://www.openedition.org/
+    scan_method: websearch
+    enabled: false
+
+job_boards:
+  - name: Enssib — information, archives et bibliothèques
+    careers_url: https://emplois-stages.enssib.fr/
+    provider: enssib
+    aggregator: true
+    enssib:
+      max_pages: 10
+      fetch_details: true
+      title_filter: *culture_titles
+    enabled: true
+  - name: Welcome to the Jungle — France
+    careers_url: https://www.welcometothejungle.com/fr/jobs
+    provider: wttj
+    aggregator: true
+    wttj:
+      filters: 'offices.country_code:FR'
+      include_all_offices: true
+      queries: ['archiviste', 'documentaliste', 'chargé de données', 'chargée de données', 'data steward', 'édition numérique', 'éditeur numérique', 'éditrice numérique', 'chef de projet numérique', 'cheffe de projet numérique', 'humanités numériques', 'documentation électronique', 'données de la recherche', 'métadonnées', 'TEI XML']
+      max_hits: 200
+    enabled: true
+  - name: Welcome to the Jungle — remote hors bureau français
+    careers_url: https://www.welcometothejungle.com/fr/jobs
+    provider: wttj
+    aggregator: true
+    wttj:
+      filters: 'remote:fulltime AND NOT offices.country_code:FR'
+      include_all_offices: true
+      queries: ['data steward', 'digital archivist', 'metadata specialist', 'digital publishing', 'research data manager']
+      max_hits: 200
+    enabled: true

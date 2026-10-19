@@ -76,6 +76,7 @@ import { localToday } from './lib/local-today.mjs';
 import { printScanSummaryHeader } from './lib/scan-summary-marker.mjs';
 import { isMainModule } from './lib/is-main-module.mjs';
 import { promoteKnownFragmentIdentity } from './url-key.mjs';
+import { buildEmploymentFilter, formatEmploymentNote } from './employment-filter.mjs';
 
 try {
   const { config } = await import('dotenv');
@@ -3337,6 +3338,7 @@ async function main() {
   const salaryFilter = buildSalaryFilter(config.salary_filter);
   const trustValidator = buildTrustValidator(config.trust_filter);
   const contentFilter = buildContentFilter(config.content_filter);
+  const employmentFilter = buildEmploymentFilter(config.employment_filter);
   const candidateCountry = loadCandidateCountry();
   const countryEligibilityFilter = buildCountryEligibilityFilter(config.country_eligibility_filter, candidateCountry);
   const visaFilter = buildVisaFilter(config.visa_filter);
@@ -3433,6 +3435,7 @@ async function main() {
   let totalFilteredPostedDate = 0;
   let totalFilteredSalary = 0;
   let totalFilteredContent = 0;
+  let totalFilteredEmployment = 0;
   let totalFilteredCountryEligibility = 0;
   let totalFilteredBlacklist = 0;
   let annotatedBlacklisted = 0;
@@ -3588,6 +3591,17 @@ async function main() {
         if (!visaFilter(job.description)) {
           totalFilteredVisa++;
           continue;
+        }
+        const employment = employmentFilter(job);
+        if (employment) {
+          if (!employment.keep) {
+            // Included in the existing content counter to preserve TSV schemas.
+            totalFilteredContent++;
+            totalFilteredEmployment++;
+            continue;
+          }
+          job.employment = employment;
+          job.note = [job.note, formatEmploymentNote(employment)].filter(Boolean).join(' — ');
         }
         const dedupUrl = normalizeUrlForDedup(job.url);
         if (seenUrls.has(dedupUrl)) {
@@ -3761,6 +3775,9 @@ async function main() {
   }
   if (config.content_filter || totalFilteredContent > 0) {
     console.log(`Filtered by content:   ${totalFilteredContent} removed`);
+  }
+  if (config.employment_filter) {
+    console.log(`  Employment subset:   ${totalFilteredEmployment} removed (included in content)`);
   }
   if (config.country_eligibility_filter || totalFilteredCountryEligibility > 0) {
     console.log(`Filtered by country eligibility: ${totalFilteredCountryEligibility} removed`);
@@ -3937,6 +3954,7 @@ async function main() {
         : '';
       const blacklistSuffix = o.blacklisted ? ' [BLACKLISTED — on your do-not-apply list]' : '';
       console.log(`  + ${o.company} | ${o.title} | ${o.location || 'N/A'}${trustSuffix}${blacklistSuffix}`);
+      if (o.employment) console.log(`    ${formatEmploymentNote(o.employment)}`);
     }
     if (dryRun) {
       console.log('\n(dry run — run without --dry-run to save results)');
@@ -3991,6 +4009,10 @@ async function main() {
       duplicates: totalDupes,
       added: verifiedOffers.length,
       added_urls: verifiedOffers.map(offer => offer.url),
+      ...(config.employment_filter ? { employment: {
+        rejected: totalFilteredEmployment,
+        offers: verifiedOffers.map(({ url, employment }) => ({ url, ...employment })),
+      } } : {}),
       errors: errors.map(({ company, error }) => ({ company, error })),
       unverified_zero: unverifiedZeroTargets,
       dry_run: dryRun,

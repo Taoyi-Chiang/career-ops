@@ -216,3 +216,9 @@ documents/*
 # Intake fingerprints — the recorded source filenames may themselves carry
 # PII (e.g. cv/jane-doe-master-cv.pdf). #1723
 data/intake-state.json
+
+# This fork tracks a separate non-academic targeting profile, without replacing
+# any root/academic portals.yml. Declare it as user-owned for the updater.
+!config/local-paths.txt
+!config/france-nonacademic/
+!config/france-nonacademic/portals.yml
